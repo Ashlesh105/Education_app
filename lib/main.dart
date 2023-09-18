@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-
 import 'Contents directory/Contents.dart';
 
 
 void main() {
-  runApp(const MaterialApp(
+  runApp( MaterialApp(
     home: SplashScreen(),
     debugShowCheckedModeBanner: false,
   ));
@@ -28,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
           'assets/c_logo.gif',
         ),
         nextScreen: ContentsPage(),
-        duration: 3000,
+        duration: 100,
       ),
     ));
   }

@@ -1,291 +1,128 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:education_app1/custom-widget.dart';
 import 'package:flutter/services.dart';
-class DataList {
-  final String title;
-  final List<DataList> children;
 
-  DataList(this.title, [this.children = const <DataList>[]]);
-}
-
-class EndDrawer extends StatelessWidget {
-  final List<DataList> data;
-
-  EndDrawer({required this.data});
-
-  Widget _buildExpandableList(List<DataList> dataList, BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: dataList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.white),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: _buildExpansionTile(dataList[index], context),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildExpansionTile(DataList dataList, BuildContext context) {
-    return ExpansionTile(
-      title: Text(dataList.title),
-      children: _buildChildren(dataList.children, context),
-    );
-  }
-
-  List<Widget> _buildChildren(List<DataList> children, BuildContext context) {
-    List<Widget> widgets = [];
-
-    for (var child in children) {
-      if (child.children.isEmpty) {
-        widgets.add(_buildListTile(child, context));
-      } else {
-        widgets.add(_buildExpansionTile(child, context));
-      }
-    }
-
-    return widgets;
-  }
-
-  Widget _buildListTile(DataList dataList, BuildContext context) {
-    return ListTile(
-      title: Text(dataList.title),
-      onTap: () {
-        // Handle item tap
-        Navigator.of(context).pop(); // Close the drawer
-        // You can add navigation logic here
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Container(
-        color: Colors.black, // Set the background color to black
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                  child: Text(
-                    'SYLLABUS VIEW',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-              ),
-            ),
-            _buildExpandableList(data, context),
-          ],
-        ),
-      ),
-    );
-  }
-}
 void main() {
-  runApp( Course());
+  runApp(const MaterialApp(
+    home: Course(),
+    debugShowCheckedModeBanner: false,
+  ));
 }
 
-class Course extends StatelessWidget {
-  const Course({Key? key}) : super(key: key);
+class Course extends StatefulWidget {
+  const Course({super.key});
 
+  @override
+  State<Course> createState() => _CourseState();
+}
+
+class _CourseState extends State<Course> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // Hide the debug banner
-      debugShowCheckedModeBanner: false,
-
-      home: const CouresPage(),
-    );
-  }
-}
-
-class CouresPage extends StatefulWidget {
-  const CouresPage({Key? key}) : super(key: key);
-
-  @override
-  State<CouresPage> createState() => _CoursePageState();
-}
-
-class _CoursePageState extends State<CouresPage> {
-  List _items = [];
-
-  // Fetch content from the json file
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/contents.json');
-    final data = await json.decode(response);
-    setState(() {
-      _items = data["items"];
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Call the readJson method when the app starts
-    readJson();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final List<DataList> data = <DataList>[
-      DataList('Basics of C Programming', <DataList>[
-        DataList('Introduction to C', <DataList>[
-          DataList('History and significance'),
-          DataList('Structure of a C program'),
-          DataList('Writing and running your first program'),
-        ]),
-        DataList('Data Types and Variables', <DataList>[
-          DataList('Integer types (int, short, long)'),
-          DataList('Floating-point types (float, double)'),
-          DataList('Character type (char)'),
-          DataList('Constants and variables'),
-          DataList('Variable declaration and initialization'),
-        ]),
-        DataList('Operators and Expressions', <DataList>[
-          DataList('Arithmetic operators (+, -, *, /, %)'),
-          DataList('Assignment operators (=, +=, -=, *=, /=, %=)'),
-          DataList('Relational operators (==, !=, <, >, <=, >=)'),
-          DataList('Logical operators (&&, ||, !)'),
-          DataList('Increment (++) and decrement (--)'),
-          DataList('Bitwise operators (&, |, ^, <<, >>)'),
-        ]),
-        DataList('Control Flow', <DataList>[
-          DataList('Conditional statements (if, else if, else)'),
-          DataList('Switch statement'),
-          DataList('Loops (while, for, do-while)'),
-          DataList('Break and continue statements'),
-          DataList('Conditional (ternary) operator'),
-        ]),
-      ]),
-      DataList('Functions and Modular Programming', <DataList>[
-        DataList('Functions', <DataList>[
-          DataList('Function declaration and definition'),
-          DataList('Function parameters and return values'),
-          DataList('Function prototypes'),
-          DataList('Recursive functions'),
-          DataList('Function pointers'),
-        ]),
-        DataList('Scope and Storage Classes', <DataList>[
-          DataList('Local and global variables'),
-          DataList('Static variables'),
-          DataList('Automatic (local) variables'),
-          DataList('Register variables'),
-        ]),
-      ]),
-      DataList('Arrays and Pointers', <DataList>[
-        DataList('Arrays', <DataList>[
-          DataList('Declaring and initializing arrays'),
-          DataList('Multidimensional arrays'),
-          DataList('Passing arrays to functions'),
-          DataList('Array manipulation'),
-        ]),
-        DataList('Pointers', <DataList>[
-          DataList('Introduction to pointers'),
-          DataList('Pointer arithmetic'),
-          DataList('Pointers and arrays'),
-          DataList('Dynamic memory allocation (malloc, free)'),
-          DataList('Pointers to functions'),
-        ]),
-      ]),
-      DataList('Structured Data Types', <DataList>[
-        DataList('Structures', <DataList>[
-          DataList('Defining and using structures'),
-          DataList('Nested structures'),
-          DataList('Array of structures'),
-          DataList('Pointer to structures'),
-        ]),
-        DataList('Unions', <DataList>[
-          DataList('Defining and using unions'),
-          DataList('Differences between structures and unions'),
-        ]),
-      ]),
-      DataList('File Handling', <DataList>[
-        DataList('File Input/Output'),
-        DataList('Opening and closing files'),
-        DataList('Reading and writing text files'),
-        DataList('Binary file handling'),
-      ]),
-      DataList('Advanced C Programming', <DataList>[
-        DataList('Dynamic Memory Allocation', <DataList>[
-          DataList('malloc, calloc, realloc, free'),
-          DataList('Memory leaks and memory management'),
-        ]),
-        DataList('Preprocessor Directives', <DataList>[
-          DataList('Macros and #define'),
-          DataList('Conditional compilation (#ifdef, #ifndef, #endif)'),
-        ]),
-        DataList('Advanced Data Types', <DataList>[
-          DataList('Enumerations'),
-          DataList('Typedef'),
-        ]),
-        DataList('Bit Manipulation', <DataList>[
-          DataList('Bitwise operations for flags and masks'),
-        ]),
-        DataList('Error Handling', <DataList>[
-          DataList('Error codes and errno'),
-        ]),
-        DataList('Multi-file Programming', <DataList>[
-          DataList('Header files and source files'),
-          DataList('Makefiles and build systems'),
-        ]),
-        DataList('Advanced Topics (Optional)', <DataList>[
-          DataList('Function pointers and callbacks'),
-          DataList('Command-line arguments'),
-          DataList('Interfacing with hardware and low-level programming'),
-        ]),
-        DataList('C Standard Library', <DataList>[
-          DataList('Standard I/O functions (printf, scanf, etc.)'),
-          DataList('String manipulation functions (strcpy, strlen, etc.)'),
-          DataList('Math functions (math.h)'),
-          DataList('Time and date functions (time.h)'),
-        ]),
-      ]),
-    ];
-
     return Scaffold(
-      endDrawer: EndDrawer(data: data), // Pass the data list to the EndDrawer
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        title: Text('Course'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            // Display the data loaded from sample.json
-            _items.isNotEmpty
-                ? Expanded(
-              child: ListView.builder(
-                itemCount: _items.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    key: ValueKey(_items[index]["id"]),
-                    margin: const EdgeInsets.all(10),
-                    color: Colors.amber.shade100,
-                    child: ListTile(
-                      leading: Text(_items[index]["id"]),
-                      title: Text(_items[index]["name"]),
-                      subtitle: Text(_items[index]["description"]),
-
-                    ),
-                  );
-                },
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  TopicWidget(
+                    text: "Introduction to C",
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    jsonData: {
+                      "title": "1. Introduction to C Programming",
+                      "explanation":
+                          "C is a general-purpose programming language that was developed in the early 1970s at Bell Labs by Dennis Ritchie. It is one of the most widely-used programming languages and serves as a foundation for many other programming languages. C is known for its efficiency, flexibility, and portability.",
+                      "codeSnippet":
+                          "Here's a simple 'Hello, World!' program in C:\n\n #include <stdio.h>\n\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}\n"
+                    },
+                  ),
+                  TopicWidget(
+                      text: "Basics of C",
+                      jsonData: {
+                        "title": "2. Basics of C Programming",
+                        "explanation":
+                            "To begin programming in C, it's important to understand the basics of the language. This includes the structure of a C program, data types, variables, constants, and basic input/output operations.",
+                        "codeSnippet":
+                            "Here's an example of declaring variables and printing their values:\n\n```c\n#include <stdio.h>\n\nint main() {\n    int number = 42;\n    float pi = 3.14159;\n    printf(\"Number: %d\\n\", number);\n    printf(\"Pi: %f\\n\", pi);\n    return 0;\n}\n```"
+                      },
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.7)
+                ],
               ),
-            )
-                : Container()
-          ],
+              Row(
+                children: [
+                  TopicWidget(
+                      text: "Control flow & decision making in C",
+                      jsonData: {
+                        "title": "3. Control Flow and Decision Making",
+                        "explanation":
+                            "Control flow in C involves making decisions and executing specific code blocks based on conditions. C provides various control structures such as if statements, switch statements, loops (while, for, do-while), and more.",
+                        "codeSnippet":
+                            "Here's an example of an if statement in C:\n\n```c\n#include <stdio.h>\n\nint main() {\n    int num = 10;\n    if (num > 0) {\n        printf(\"Positive\\n\");\n    } else {\n        printf(\"Non-positive\\n\");\n    }\n    return 0;\n}\n```"
+                      },
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.7),
+                  TopicWidget(
+                      text: "Functions & Modular Programming in C",
+                      jsonData: {
+                        "title": "4. Functions and Modular Programming",
+                        "explanation":
+                            "Functions are a fundamental concept in C programming, allowing you to break your code into smaller, reusable blocks. Modular programming involves organizing your code into separate functions for better maintainability and readability.",
+                        "codeSnippet":
+                            "Here's an example of defining and using a function in C:\n\n```c\n#include <stdio.h>\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int result = add(3, 5);\n    printf(\"Result: %d\\n\", result);\n    return 0;\n}\n```"
+                      },
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.7)
+                ],
+              ),
+              Row(
+                children: [
+                  TopicWidget(
+                      text: "Arrays & Pointers in C",
+                      jsonData: {
+                        "title": "5. Arrays and Pointers",
+                        "explanation":
+                            "Arrays are used to store collections of data of the same type. Pointers are variables that store memory addresses. Understanding arrays and pointers is crucial for efficient memory management and data manipulation in C.",
+                        "codeSnippet":
+                            "Here's an example of declaring an array and using a pointer in C:\n\n```c\n#include <stdio.h>\n\nint main() {\n    int numbers[] = {1, 2, 3, 4, 5};\n    int *ptr = numbers;\n    printf(\"Value at index 2: %d\\n\", numbers[2]);\n    printf(\"Value using pointer: %d\\n\", *(ptr + 2));\n    return 0;\n}\n```"
+                      },
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.7),
+                  TopicWidget(
+                      text: " Structures & Unions in C",
+                      jsonData: {
+                        "title": "6. Structures and Unions",
+                        "explanation":
+                            "Structures allow you to create custom data types by grouping multiple variables of different data types into a single unit. Unions, on the other hand, share memory space among their members.",
+                        "codeSnippet":
+                            "Here's an example of defining a structure and a union in C:\n\n```c\nstruct Point {\n    int x;\n    int y;\n};\n\nunion Data {\n    int i;\n    float f;\n    char str[20];\n};\n```"
+                      },
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.7)
+                ],
+              ),
+              TopicWidget(
+                  text: " File Handling and I/O in C ",
+                  jsonData: {
+                    "title": "7. File Handling and I/O",
+                    "explanation":
+                        "C allows you to read from and write to files using file handling functions such as fopen, fclose, fread, and fwrite. You can perform both text and binary file I/O and handle errors gracefully.",
+                    "codeSnippet":
+                        "Here's an example of opening a text file and writing data in C:\n\n```c\n#include <stdio.h>\n\nint main() {\n    FILE *file = fopen(\"example.txt\", \"w\");\n    fprintf(file, \"Hello, File!\");\n    fclose(file);\n    return 0;\n}\n```"
+                  },
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.7)
+            ],
+          ),
         ),
       ),
     );

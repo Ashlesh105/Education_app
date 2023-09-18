@@ -1,6 +1,5 @@
 import 'package:education_app1/Contents%20directory/Home.dart';
 import 'package:flutter/material.dart';
-
 import 'Course.dart';
 import 'Quiz.dart';
 
@@ -39,9 +38,9 @@ class _ContentsPageState extends State<ContentsPage> {
           },
           currentIndex:
               myIndex, //currentIndex will set to the initial index of the state
-          items: [
+          items: const [
             BottomNavigationBarItem(
-              icon: GestureDetector(child: Icon(Icons.home_filled)),
+              icon: Icon(Icons.home_filled),
               label: 'Home',
             ),
             BottomNavigationBarItem(
